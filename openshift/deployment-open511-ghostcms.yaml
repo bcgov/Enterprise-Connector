@@ -4,6 +4,7 @@ metadata:
   name: open511-ghostcms
   labels:
     app: open511-ghostcms
+    app.kubernetes.io/part-of: Integrations
 spec:
   replicas: 1
   selector:
@@ -11,7 +12,6 @@ spec:
       app: open511-ghostcms
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: open511-ghostcms
         deploymentconfig: open511-ghostcms
@@ -19,11 +19,11 @@ spec:
       containers:
         - resources:
             requests:
-              cpu: 100m
+              cpu: 50m
               memory: 300Mi
             limits:
-              cpu: 200m
-              memory: 500Mi
+              cpu: 100m
+              memory: 400Mi
           terminationMessagePath: /dev/termination-log
           name: open511-ghostcms
           env:
