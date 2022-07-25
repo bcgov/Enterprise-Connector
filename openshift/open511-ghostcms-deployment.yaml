@@ -75,7 +75,7 @@ spec:
           imagePullPolicy: Always
           terminationMessagePolicy: File
           image: >-
-            image-registry.openshift-image-registry.svc:5000/b07b69-dev/open511-ghostcms:latest
+            image-registry.openshift-image-registry.svc:5000/b07b69-tools/open511-ghostcms
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
