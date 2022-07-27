@@ -4,7 +4,7 @@ metadata:
   name: camel-ghostcms-configmap
 data:
   application.open511.apiroot: dev-api.open511.gov.bc.ca
-  camel.zipkin.endpoint: "http://zipkin-b07b69-{env}.apps.silver.devops.gov.bc.ca/api/v2/spans"
+  camel.zipkin.endpoint: "http://zipkin:9411/api/v2/spans"
   drivebc-ghostcms.camel.cron: 0+0/10+*+*+*+?
   logstash.host: logstash-local
   logstash.port: "8002"
