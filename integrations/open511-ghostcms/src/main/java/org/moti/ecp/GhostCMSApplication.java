@@ -8,13 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 //@CamelOpenTracing
 @CamelZipkin
-public class Open511GhostCMSApplication {
+public class GhostCMSApplication {
 
     /**
      * A main method to start this application.
      */
     public static void main(String[] args) {
-        SpringApplication.run(Open511GhostCMSApplication.class, args);
+        SpringApplication.run(GhostCMSApplication.class, args);
     }
 
 }

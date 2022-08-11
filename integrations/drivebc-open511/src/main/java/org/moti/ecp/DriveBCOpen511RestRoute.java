@@ -1,6 +1,7 @@
 package org.moti.ecp;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import org.apache.camel.model.rest.RestBindingMode;
@@ -12,38 +13,37 @@ import org.apache.camel.model.rest.RestBindingMode;
 @Component
 public class DriveBCOpen511RestRoute extends RouteBuilder {
 
+  @Value("${camel.servlet.mapping.context-path}")
+  private String contextPath;
+
   @Override
   public void configure() {
 
-    // This section is required - it tells Camel how to configure the REST service
+    // Configure the REST service
     restConfiguration()
-        .component("netty-http")
-        .port("{{application.port}}")
+        .component("servlet")
+        .contextPath(contextPath.substring(0, contextPath.length() - 2))
         .enableCORS(true)
-
         .bindingMode(RestBindingMode.json)
-
-        // turn on swagger api-doc
-        .apiContextPath("/api-doc")
+        // turn on Swagger api-doc
+        .apiContextPath("{{api.doc.path}}")
         .apiProperty("api.title", "DriveBC Open511 Proxy API")
         .apiProperty("api.version", "1.0.0");
+      
 
-    // rest("/api")
-    rest()
-        .path("/api") // This makes the API available at http://host:port/$CONTEXT_ROOT/api
-        .consumes("application/json")
-        .produces("application/json")
+    rest().description("DriveBC Open511 REST service")
 
-        .get("{all}")
+        .get("{all}").description("Proxy to Open511 API - all routes and parameters are accepted")
         .route().routeId("rest-open511-events")
         .to("direct:rest-open511-events")
         .endRest()
 
-        // --- We could proxy specific endpoints instead of simply passing everything to Open511
-        // .get("/events")
-        // .route().routeId("rest-open511-events")
-        // .to("direct:rest-open511-events")
-        // .endRest()
+    // --- We could proxy specific endpoints instead of simply passing everything to
+    // Open511
+    // .get("/events")
+    // .route().routeId("rest-open511-events")
+    // .to("direct:rest-open511-events")
+    // .endRest()
     ; // end rest()
   }
 }

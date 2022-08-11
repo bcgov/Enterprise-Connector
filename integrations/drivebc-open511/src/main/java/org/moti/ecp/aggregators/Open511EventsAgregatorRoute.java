@@ -24,16 +24,20 @@ public class Open511EventsAgregatorRoute extends RouteBuilder {
             exchange.getIn().setHeader(Exchange.HTTP_QUERY, queryString);
           }
         })
+        .log("API Called")
         .routeId("open511-events-service")
         .onException(HttpOperationFailedException.class)
         .handled(true)    
           .setBody(constant("[]"))
           .setHeader(Exchange.HTTP_RESPONSE_CODE).constant(APP_RESPONSE_CODE)
-         
           .end()
-        // bridgeEndpoint=true enables the camel querystring to be passed through       
+
+         // bridgeEndpoint=true enables the querystring to be passed through while ignoring the origianl URI    
         .toD("http://{{application.open511.apiroot}}/${header.all}" + "?bridgeEndpoint=true")
-          .unmarshal(new JacksonDataFormat());
+        .choice()
+        .when(header(Exchange.CONTENT_TYPE).isEqualTo("application/json")) 
+           .unmarshal(new JacksonDataFormat())
+         ;
   }
 
 }
