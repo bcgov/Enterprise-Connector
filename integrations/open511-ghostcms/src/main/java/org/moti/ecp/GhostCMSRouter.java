@@ -51,7 +51,6 @@ public class GhostCMSRouter extends RouteBuilder {
          
         // Call IoT Central API
         .setHeader(Exchange.HTTP_METHOD, simple("GET"))
-        .setHeader("Authorization", simple("{{iotcentral.auth}}"))        
         .log("API Call to : https://{{iotcentral.weather.api}}")
         .toD("https://{{iotcentral.weather.api}}")
 
