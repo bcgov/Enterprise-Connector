@@ -2,6 +2,12 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+    string guid = Guid.NewGuid().ToString();
+    string east = "~/images/East.jpg?" + guid;
+    string west = "~/images/West.jpg?" + guid;
+    string north = "~/images/North.jpg?" + guid;
+    string south = "~/images/South_655.jpg?" + guid;
+
 }
 <div class="container">
 
@@ -10,16 +16,16 @@
     </div>
 
     <div class="my-1 mx-1">
-        <img src="/images/East.jpg" />
+        <img src="@Url.Content(east)" alt="East" /> ;
     </div>
     <div class="my-1 mx-1">
-        <img src="/images/West.jpg" />
+        <img src="@Url.Content(west)" alt="West" /> ;
     </div>
     <div class="my-1 mx-1">
-        <img src="/images/North.jpg" />
+        <img src="@Url.Content(north)" alt="North" /> ;
     </div>
     <div class="my-1 mx-1">
-        <img src="/images/South_655.jpg" />
+        <img src="@Url.Content(south)" alt="South" /> ;
     </div>
 </div>
 
