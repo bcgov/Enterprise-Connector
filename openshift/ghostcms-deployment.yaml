@@ -1,51 +1,57 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ghostcms-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: netapp-file-standard
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: camera-web-app
+  name: ghostcms
   labels:
-    app: camera-web-app
-    app.kubernetes.io/part-of: Integrations
+    app: ghostcms
+    app.kubernetes.io/part-of: Content-Management
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: camera-web-app
+      app: ghostcms
   template:
     metadata:
       labels:
-        app: camera-web-app
-        deploymentconfig: camera-web-app
+        app: ghostcms
+        deploymentconfig: ghostcms
     spec:
+      volumes:
+        - name: ghostcms-1
+          persistentVolumeClaim:
+            claimName: ghostcms-pvc
       containers:
-        - name: camera-web-app
+        - name: ghostcms
           env:
-            - name: ImageApi__Url
-              valueFrom:
-                secretKeyRef:
-                  name: camera-api-secret
-                  key: Url
-            - name: ImageApi__Ssa
-              valueFrom:
-                secretKeyRef:
-                  name: camera-api-secret
-                  key: Ssa
-            - name: Hangfire__Interval
-              valueFrom:
-                secretKeyRef:
-                  name: camera-api-secret
-                  key: Interval
+            - name: url
+              value: 'https://ghostcms-b07b69-dev.apps.silver.devops.gov.bc.ca/'
           image: >-
-            image-registry.openshift-image-registry.svc:5000/b07b69-tools/camera-web-app:latest
+            image-registry.openshift-image-registry.svc:5000/b07b69-tools/ghostcms
           ports:
-            - containerPort: 8080
+            - containerPort: 2368
               protocol: TCP
           resources:
             requests:
-              cpu: 100m
-              memory: 200Mi
+              cpu: 500m
+              memory: 256Mi
             limits:
-              cpu: 200m
-              memory: 300Mi
+              cpu: 800m
+              memory: 500Mi
+          volumeMounts:
+            - name: ghostcms-1
+              mountPath: /var/lib/ghost/content
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: IfNotPresent
@@ -65,24 +71,25 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: camera-web-app
+  name: ghostcms
 spec:
   ports:
     - name: web
-      port: 8080
+      port: 2368
       protocol: TCP
-      targetPort: 8080
+      targetPort: 2368
   selector:
-    deploymentconfig: camera-web-app
+    deploymentconfig: ghostcms
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   annotations:
     haproxy.router.openshift.io/timeout: 5m
-  name: camera-web-app
+  creationTimestamp: null
+  name: ghostcms
 spec:
-  host: camera-web-app-b07b69-dev.apps.silver.devops.gov.bc.ca
+  host: ghostcms-b07b69-test.apps.silver.devops.gov.bc.ca
   path: "/"
   port:
     targetPort: web
@@ -90,21 +97,21 @@ spec:
     termination: edge
   to:
     kind: Service
-    name: camera-web-app
+    name: ghostcms
     weight: 100
   wildcardPolicy: None
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: allow-camera-web-app
+  name: allow-ghostcms
 spec:
   podSelector:
     matchLabels:
-      deploymentconfig: camera-web-app
+      deploymentconfig: ghostcms
   ingress:
     - ports:
         - protocol: TCP
-          port: 8080
+          port: 2368
   policyTypes:
     - Ingress
