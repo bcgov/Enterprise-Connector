@@ -89,7 +89,7 @@ metadata:
   creationTimestamp: null
   name: ghostcms
 spec:
-  host: ghostcms-b07b69-test.apps.silver.devops.gov.bc.ca
+  host: ghostcms-b07b69-dev.apps.silver.devops.gov.bc.ca
   path: "/"
   port:
     targetPort: web
